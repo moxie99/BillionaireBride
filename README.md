@@ -1,97 +1,81 @@
-This is a new [**React Native**](https://reactnative.dev) project, bootstrapped using [`@react-native-community/cli`](https://github.com/react-native-community/cli).
+# BillionaireBride
 
-# Getting Started
+## 📌 Overview
+BillionaireBride is a React Native-based mobile application designed to deliver a smooth and immersive short-video experience similar to TikTok and Instagram Reels. The app incorporates Firebase for backend services and ensures seamless playback of videos with an intuitive UX/UI design.
 
-> **Note**: Make sure you have completed the [Set Up Your Environment](https://reactnative.dev/docs/set-up-your-environment) guide before proceeding.
+## 🚀 Features
+- **Auto-Play Trailer**: After 3 seconds, the trailer video starts automatically with muted sound.
+- **Seamless Video Transition**: Clicking on the trailer redirects to the Shorts page, continuing the video from the exact timestamp with sound enabled.
+- **Smooth Scroll Experience**: Swipe through videos effortlessly, mimicking TikTok and Instagram Reels UX.
+- **Firebase Integration**: Videos are loaded dynamically from an API connected to Firebase.
+- **Optimized Performance**: Next video preloaded while scrolling to ensure lag-free playback.
 
-## Step 1: Start Metro
+## 🛠️ Tech Stack
+- **Frontend**: React Native, Expo
+- **Navigation**: React Navigation (Bottom Tabs, Stack Navigation)
+- **State Management**: Context API / Hooks
+- **Backend**: Firebase (Firestore, Storage)
+- **Video Handling**: react-native-video
 
-First, you will need to run **Metro**, the JavaScript build tool for React Native.
+## 📂 Project Setup
+### Prerequisites
+- Node.js (>=18)
+- Expo CLI
+- Firebase account & configuration
 
-To start the Metro dev server, run the following command from the root of your React Native project:
-
+### Installation
 ```sh
-# Using npm
-npm start
+# Clone the repository
+git clone <repo-url>
+cd BillionaireBride
 
-# OR using Yarn
-yarn start
+# Install dependencies
+yarn install  # or npm install
+
+# Configure Firebase
+# Add your Firebase configuration in a .env file or inside the project
+
+# Run the project
+npx expo start  # or npm run start
 ```
 
-## Step 2: Build and run your app
-
-With Metro running, open a new terminal window/pane from the root of your React Native project, and use one of the following commands to build and run your Android or iOS app:
-
-### Android
-
+### Running on Android/iOS
 ```sh
-# Using npm
-npm run android
-
-# OR using Yarn
-yarn android
+npm run android  # For Android
+tnpm run ios     # For iOS
 ```
 
-### iOS
-
-For iOS, remember to install CocoaPods dependencies (this only needs to be run on first clone or after updating native deps).
-
-The first time you create a new project, run the Ruby bundler to install CocoaPods itself:
-
-```sh
-bundle install
+## 🔍 Project Structure
+```
+BillionaireBride/
+│── src/
+│   ├── components/        # Reusable UI components
+│   ├── screens/           # App screens
+│   ├── navigation/        # Navigation setup
+│   ├── services/          # API calls & Firebase services
+│   ├── assets/            # Images, icons, etc.
+│── App.js                 # Main app entry point
+│── package.json           # Project dependencies
+│── README.md              # Documentation
 ```
 
-Then, and every time you update your native dependencies, run:
+## 🛠 Development Notes
+- Ensure smooth transitions between videos by preloading the next one.
+- Optimize Firebase queries to avoid delays in loading new videos.
+- Implement lazy loading for better performance.
 
-```sh
-bundle exec pod install
-```
+## 📌 Future Enhancements
+- User authentication & profile system
+- Like, comment, and share functionalities
+- Video upload feature
 
-For more information, please visit [CocoaPods Getting Started guide](https://guides.cocoapods.org/using/getting-started.html).
+## 🤝 Contributions
+Contributions are welcome! Feel free to open issues and PRs.
 
-```sh
-# Using npm
-npm run ios
+## 📄 License
+MIT License
 
-# OR using Yarn
-yarn ios
-```
+---
 
-If everything is set up correctly, you should see your new app running in the Android Emulator, iOS Simulator, or your connected device.
+### 🚀 Enjoy the experience of BillionaireBride! 🎥✨
 
-This is one way to run your app — you can also build it directly from Android Studio or Xcode.
-
-## Step 3: Modify your app
-
-Now that you have successfully run the app, let's make changes!
-
-Open `App.tsx` in your text editor of choice and make some changes. When you save, your app will automatically update and reflect these changes — this is powered by [Fast Refresh](https://reactnative.dev/docs/fast-refresh).
-
-When you want to forcefully reload, for example to reset the state of your app, you can perform a full reload:
-
-- **Android**: Press the <kbd>R</kbd> key twice or select **"Reload"** from the **Dev Menu**, accessed via <kbd>Ctrl</kbd> + <kbd>M</kbd> (Windows/Linux) or <kbd>Cmd ⌘</kbd> + <kbd>M</kbd> (macOS).
-- **iOS**: Press <kbd>R</kbd> in iOS Simulator.
-
-## Congratulations! :tada:
-
-You've successfully run and modified your React Native App. :partying_face:
-
-### Now what?
-
-- If you want to add this new React Native code to an existing application, check out the [Integration guide](https://reactnative.dev/docs/integration-with-existing-apps).
-- If you're curious to learn more about React Native, check out the [docs](https://reactnative.dev/docs/getting-started).
-
-# Troubleshooting
-
-If you're having issues getting the above steps to work, see the [Troubleshooting](https://reactnative.dev/docs/troubleshooting) page.
-
-# Learn More
-
-To learn more about React Native, take a look at the following resources:
-
-- [React Native Website](https://reactnative.dev) - learn more about React Native.
-- [Getting Started](https://reactnative.dev/docs/environment-setup) - an **overview** of React Native and how setup your environment.
-- [Learn the Basics](https://reactnative.dev/docs/getting-started) - a **guided tour** of the React Native **basics**.
-- [Blog](https://reactnative.dev/blog) - read the latest official React Native **Blog** posts.
-- [`@facebook/react-native`](https://github.com/facebook/react-native) - the Open Source; GitHub **repository** for React Native.
