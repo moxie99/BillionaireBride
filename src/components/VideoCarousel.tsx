@@ -1,5 +1,5 @@
 /* eslint-disable react-native/no-inline-styles */
-import React, {useRef, useEffect, useState} from 'react';
+import React, {useEffect, useRef, useState} from 'react';
 import {
   View,
   FlatList,
@@ -14,6 +14,10 @@ import {BlurView} from '@react-native-community/blur';
 import {Ionicons} from '@expo/vector-icons';
 import {RFValue} from 'react-native-responsive-fontsize';
 import {useNavigation} from '@react-navigation/native';
+import {collection, onSnapshot} from 'firebase/firestore';
+import {FIRESTORE_DB} from '../utils/FirebaseConfig';
+import {VideoItemType} from '../utils/types';
+import Loader from './Loader/Loader';
 
 const {width, height} = Dimensions.get('window');
 const ITEM_HEIGHT = height / 2;
@@ -34,7 +38,7 @@ export const videosList = [
     thumbnail:
       'https://img.freepik.com/premium-vector/cinema-elements-illustration_34401-245.jpg?semt=ais_hybrid',
     video:
-      'https://videos.pexels.com/video-files/7670218/7670218-sd_960_506_25fps.mp4',
+      'https://videos.pexels.com/video-files/7049216/7049216-sd_360_640_30fps.mp4',
     title: "Funny Man's World",
     description:
       'Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.',
@@ -73,34 +77,90 @@ export const videosList = [
 
 const VideoCarousel: React.FC = () => {
   const [activeIndex, setActiveIndex] = useState(0);
+  const [videosLists, setVideosLists] = useState<VideoItemType[]>([]);
+  const [loading, setLoading] = useState<boolean>(true); // Track loading state
+  const [playStates, setPlayStates] = useState<boolean[]>(
+    new Array(videosList.length).fill(false),
+  );
   const videoRef = useRef<VideoRef>(null);
   const flatListRef = useRef<FlatList>(null);
-  const [shouldPlay, setShouldPlay] = useState(false);
+  const timerRef = useRef<NodeJS.Timeout | null>(null);
 
   const navigation = useNavigation();
-  useEffect(() => {
-    const timeout = setTimeout(() => setShouldPlay(true), 3000);
-    return () => clearTimeout(timeout);
-  }, [activeIndex]);
 
+  // Function to handle video play after delay
+  const startVideoAfterDelay = (index: number) => {
+    if (timerRef.current) {
+      clearTimeout(timerRef.current);
+    } // Clear previous timer
+    timerRef.current = setTimeout(() => {
+      const updatedPlayStates = [...playStates];
+      updatedPlayStates[index] = true; // Start the video after 3 seconds
+      setPlayStates(updatedPlayStates);
+    }, 3000); // 3-second delay
+  };
+
+  const onViewableItemsChanged = ({viewableItems}: any) => {
+    const visibleIndex = viewableItems[0]?.index ?? 0;
+    setActiveIndex(visibleIndex);
+
+    // Stop any previous video from playing
+    const updatedPlayStates = [...playStates];
+    updatedPlayStates.forEach((_, idx) => (updatedPlayStates[idx] = false));
+
+    // Set the new video to play after 3 seconds
+    startVideoAfterDelay(visibleIndex);
+
+    setPlayStates(updatedPlayStates);
+  };
+  useEffect(() => {
+    const todoRef = collection(FIRESTORE_DB, 'videos');
+    const subscriber = onSnapshot(todoRef, {
+      next: snapshot => {
+        const todos: any[] = [];
+        snapshot.docs.forEach(doc => {
+          todos.push({
+            firebaseId: doc.id,
+            ...doc.data(),
+          });
+        });
+        setVideosLists(todos);
+        setLoading(false);
+      },
+      error: err => {
+        console.error('Error fetching videos:', err);
+        setLoading(false);
+      },
+    });
+    return () => subscriber();
+  }, []);
   const renderItem = ({item, index}: {item: any; index: number}) => (
     <View style={styles.itemContainer}>
       <ImageBackground source={{uri: item.thumbnail}} style={styles.thumbnail}>
         <BlurView style={styles.blurView} blurType="dark" blurAmount={10} />
-        {shouldPlay && activeIndex === index && (
-          <Video
-            ref={videoRef}
-            source={{uri: item.video}}
-            style={styles.video}
-            resizeMode="cover"
-            repeat
-            playInBackground={false}
-            playWhenInactive={false}
-          />
-        )}
+        <Video
+          ref={videoRef}
+          source={{uri: item.video}}
+          style={styles.video}
+          resizeMode="cover"
+          repeat
+          playInBackground={false}
+          playWhenInactive={false}
+          paused={!playStates[index]}
+          poster={{
+            source: {uri: `${item.thumbnail}`},
+            resizeMode: 'cover',
+          }}
+        />
       </ImageBackground>
     </View>
   );
+
+  if (loading) {
+    return (
+      <Loader title="Please hold on, we are fetching videos for your view" />
+    );
+  }
 
   return (
     <View style={styles.container}>
@@ -109,7 +169,7 @@ const VideoCarousel: React.FC = () => {
       </TouchableOpacity>
       <FlatList
         ref={flatListRef}
-        data={videosList}
+        data={videosLists}
         renderItem={renderItem}
         keyExtractor={item => item.id}
         horizontal
@@ -118,8 +178,9 @@ const VideoCarousel: React.FC = () => {
         onMomentumScrollEnd={event => {
           const index = Math.floor(event.nativeEvent.contentOffset.x / width);
           setActiveIndex(index);
-          setShouldPlay(false);
         }}
+        onViewableItemsChanged={onViewableItemsChanged}
+        viewabilityConfig={{viewAreaCoveragePercentThreshold: 50}}
       />
       <View style={styles.controlsContainer}>
         <TouchableOpacity style={styles.button}>
@@ -165,7 +226,7 @@ const VideoCarousel: React.FC = () => {
         <Text style={{fontWeight: '700', fontSize: RFValue(17)}}>Play</Text>
       </TouchableOpacity>
       <View style={styles.indicatorContainer}>
-        {videosList.map((_, index) => (
+        {videosLists.map((_, index) => (
           <View
             key={index}
             style={
@@ -200,9 +261,10 @@ const styles = StyleSheet.create({
   },
   blurView: {
     width: '100%',
-    height: 50,
+    height: '100%',
     position: 'absolute',
-    bottom: 0,
+    top: 0,
+    left: 0,
   },
   video: {
     position: 'absolute',

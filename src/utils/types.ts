@@ -4,3 +4,12 @@ export interface Show {
   image: string;
   genres: string[];
 }
+
+
+export type VideoItemType = {
+  id: string;
+  thumbnail: string;
+  video: string;
+  title: string;
+  description: string;
+};
