@@ -82,7 +82,14 @@ const VideoCarousel: React.FC = () => {
     return () => subscriber();
   }, []);
   const renderItem = ({item, index}: {item: any; index: number}) => (
-    <View style={styles.itemContainer}>
+    <TouchableOpacity
+      onPress={() => {
+        navigation.navigate('Bottomtabs', {
+          screen: 'ShortScreen',
+          params: {videoData: videosLists[activeIndex]},
+        });
+      }}
+      style={styles.itemContainer}>
       <ImageBackground source={{uri: item.thumbnail}} style={styles.thumbnail}>
         <BlurView style={styles.blurView} blurType="dark" blurAmount={10} />
         <Video
@@ -91,6 +98,7 @@ const VideoCarousel: React.FC = () => {
           style={styles.video}
           resizeMode="cover"
           repeat
+          muted
           playInBackground={false}
           playWhenInactive={false}
           paused={!playStates[index]}
@@ -100,7 +108,7 @@ const VideoCarousel: React.FC = () => {
           }}
         />
       </ImageBackground>
-    </View>
+    </TouchableOpacity>
   );
 
   if (loading) {
