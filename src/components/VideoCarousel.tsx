@@ -218,7 +218,7 @@ const VideoCarousel: React.FC = () => {
         onPress={() => {
           navigation.navigate('Bottomtabs', {
             screen: 'ShortScreen',
-            params: {videoData: videosList[activeIndex]},
+            params: {videoData: videosLists[activeIndex]},
           });
         }}
         style={styles.playButton}>
@@ -292,8 +292,8 @@ const styles = StyleSheet.create({
     borderRadius: 12,
     alignItems: 'center',
     justifyContent: 'center',
-    paddingVertical: RFValue(10),
-    paddingHorizontal: RFValue(20),
+    paddingVertical: RFValue(5),
+    paddingHorizontal: RFValue(12),
   },
   playButton: {
     position: 'absolute',
@@ -302,7 +302,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     bottom: 20,
     backgroundColor: '#fff',
-    paddingVertical: RFValue(10),
+    paddingVertical: RFValue(12),
     paddingHorizontal: RFValue(50),
     borderRadius: 12,
     gap: RFValue(3),
