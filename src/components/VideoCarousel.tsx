@@ -22,65 +22,12 @@ import Loader from './Loader/Loader';
 const {width, height} = Dimensions.get('window');
 const ITEM_HEIGHT = height / 2;
 
-export const videosList = [
-  {
-    id: '1',
-    thumbnail:
-      'https://c8.alamy.com/comp/EJWP0H/titanic-movie-poster-1997-EJWP0H.jpg',
-    video:
-      'https://videos.pexels.com/video-files/30462167/13054244_640_360_30fps.mp4',
-    title: "Secret Man's World",
-    description:
-      'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi',
-  },
-  {
-    id: '2',
-    thumbnail:
-      'https://img.freepik.com/premium-vector/cinema-elements-illustration_34401-245.jpg?semt=ais_hybrid',
-    video:
-      'https://videos.pexels.com/video-files/7049216/7049216-sd_360_640_30fps.mp4',
-    title: "Funny Man's World",
-    description:
-      'Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.',
-  },
-  {
-    id: '3',
-    thumbnail:
-      'https://img.freepik.com/premium-psd/movie-3d-text-effect_524190-1659.jpg?semt=ais_hybrid',
-    video:
-      'https://videos.pexels.com/video-files/6541448/6541448-sd_640_360_25fps.mp4',
-    title: 'Finibus Bonorum et Malorum',
-    description:
-      'Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo. Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit',
-  },
-  {
-    id: '4',
-    thumbnail:
-      'https://img.freepik.com/premium-photo/cinema-film-roll-red-carpet-3d-illustration_252025-571.jpg?semt=ais_hybrid',
-    video:
-      'https://videos.pexels.com/video-files/8439147/8439147-sd_640_360_25fps.mp4',
-    title: 'What is Lorem Ipsum?',
-    description:
-      'At vero eos et accusamus et iusto odio dignissimos ducimus qui blanditiis praesentium voluptatum deleniti atque corrupti quos dolores et quas molestias excepturi sint occaecati cupiditate non provident, similique sunt in culpa qui officia deserunt mollitia animi, id est laborum et dolorum fuga.',
-  },
-  {
-    id: '5',
-    thumbnail:
-      'https://img.freepik.com/free-psd/3d-cinema-blank-banner-background_23-2150822410.jpg?semt=ais_hybrid',
-    video:
-      'https://videos.pexels.com/video-files/2256158/2256158-sd_960_506_24fps.mp4',
-    title: 'Why do we use it?',
-    description:
-      'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.',
-  },
-];
-
 const VideoCarousel: React.FC = () => {
   const [activeIndex, setActiveIndex] = useState(0);
   const [videosLists, setVideosLists] = useState<VideoItemType[]>([]);
   const [loading, setLoading] = useState<boolean>(true); // Track loading state
   const [playStates, setPlayStates] = useState<boolean[]>(
-    new Array(videosList.length).fill(false),
+    new Array(videosLists?.length).fill(false),
   );
   const videoRef = useRef<VideoRef>(null);
   const flatListRef = useRef<FlatList>(null);

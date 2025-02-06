@@ -1,6 +1,6 @@
 /* eslint-disable react-native/no-inline-styles */
 import {Ionicons} from '@expo/vector-icons';
-import React, {useRef, useState} from 'react';
+import React, {useEffect, useRef, useState} from 'react';
 import {
   View,
   Text,
@@ -11,7 +11,10 @@ import {
 } from 'react-native';
 import {RFValue} from 'react-native-responsive-fontsize';
 import Video, {VideoRef} from 'react-native-video';
-import {videosList} from '../components/VideoCarousel';
+import {VideoItemType} from '../utils/types';
+import {collection, onSnapshot} from 'firebase/firestore';
+import {FIRESTORE_DB} from '../utils/FirebaseConfig';
+import Loader from '../components/Loader/Loader';
 
 const {height, width} = Dimensions.get('window');
 
@@ -135,15 +138,47 @@ const VideoItem = ({
 };
 const ShortScreen = ({route}: {route: any}) => {
   const [viewableItems, setViewableItems] = useState<any>([]);
+  const [videosLists, setVideosLists] = useState<VideoItemType[]>([]);
+  const [loading, setLoading] = useState<boolean>(true); // Track loading state
 
   const onViewableItemsChanged = ({viewableItems}: any) => {
     setViewableItems(viewableItems);
   };
+
+  useEffect(() => {
+    const todoRef = collection(FIRESTORE_DB, 'videos');
+    const subscriber = onSnapshot(todoRef, {
+      next: snapshot => {
+        const todos: any[] = [];
+        snapshot.docs.forEach(doc => {
+          todos.push({
+            firebaseId: doc.id,
+            ...doc.data(),
+          });
+        });
+        setVideosLists(todos);
+        setLoading(false);
+      },
+      error: err => {
+        console.error('Error fetching videos:', err);
+        setLoading(false);
+      },
+    });
+    return () => subscriber();
+  }, []);
   const videoData = route?.params?.videoData ?? null;
   const modifiedData = videoData
-    ? [videoData, ...videosList.filter(item => item.id !== videoData.id)]
-    : videosList;
+    ? [
+        videoData,
+        ...videosLists.filter((item: {id: any}) => item.id !== videoData.id),
+      ]
+    : videosLists;
 
+  if (loading) {
+    return (
+      <Loader title="Please wait, we are fetching other videos for your view" />
+    );
+  }
   return (
     <FlatList
       data={modifiedData}
